@@ -1,0 +1,17 @@
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  gap: 5rem;
+  padding-bottom: 4rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .landing-page {
+    gap: 3rem;
+    padding-bottom: 2rem;
+  }
+}
