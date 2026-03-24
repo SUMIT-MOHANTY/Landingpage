@@ -1,0 +1,80 @@
+/**
+ * Cross-browser compatibility CSS fixes
+ * Addresses common rendering inconsistencies
+ */
+
+/* Reset box-sizing for all elements */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Normalize font rendering */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Fix inconsistent button styling */
+button {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* Fix for Firefox form control styling */
+input, textarea, select, button {
+  font-family: inherit;
+}
+
+/* Fix for iOS input styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Fix for Safari's border-radius overflow issue */
+.overflow-hidden {
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+/* Fix for IE11 flexbox issues */
+.flex-container {
+  display: flex;
+  width: 100%;
+}
+
+.flex-item {
+  flex: 1 1 auto;
+}
+
+/* Fix for uneven button heights in Firefox */
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* Mobile-specific fixes */
+@media (max-width: 768px) {
+  /* Prevent text size adjustment after orientation changes */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Fix for iOS tap highlight */
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "scans": [
+    {
+      "name": "Content Security Policy Validation",
+      "enabled": true,
+      "severity": "high"
+    },
+    {
+      "name": "Cross-Site Scripting (XSS) Detection",
+      "enabled": true,
+      "severity": "critical"
+    },
+    {
+      "name": "Sensitive Data Exposure",
+      "enabled": true,
+      "severity": "critical"
+    },
+    {
+      "name": "Cross-Site Request Forgery (CSRF)",
+      "enabled": true,
+      "severity": "high"
+    },
+    {
+      "name": "Outdated Libraries Detection",
+      "enabled": true,
+      "severity": "medium"
+    },
+    {
+      "name": "Missing Security Headers",
+      "enabled": true,
+      "severity": "medium"
+    }
+  ],
+  "excludePaths": [
+    "/node_modules/",
+    "/testing/reports/",
+    "/dist/"
+  ],
+  "reportOutput": "./security/scan_results"
+}
