@@ -1,0 +1,37 @@
+{
+  "name": "landing-page-project",
+  "version": "1.0.0",
+  "description": "Landing page with cross-browser compatibility",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "test:browser": "http-server tests/browser-compatibility -o",
+    "test:compatibility": "node ./tests/browser-compatibility/test-runner.js",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "core-js": "^3.28.0",
+    "react": "^17.0.2",
+    "react-app-polyfill": "^3.0.0",
+    "react-dom": "^17.0.2",
+    "regenerator-runtime": "^0.13.11"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all",
+      "ie 11"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version",
+      "ie 11"
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './styles/global.css';
+import './styles/variables.css';
+import './styles/responsive.css';
+import App from './App';
+
+// Global error handler
+const errorHandler = (error, errorInfo) => {
+  console.error('Uncaught error:', error, errorInfo);
+  // Here you can log errors to a service
+};
+
+// Add global error event listener
+window.addEventListener('error', (event) => {
+  errorHandler(event.error);
+  // Prevent default browser error handling
+  event.preventDefault();
+});
+
+// Add unhandled promise rejection handler
+window.addEventListener('unhandledrejection', (event) => {
+  errorHandler(event.reason);
+  // Prevent default browser error handling
+  event.preventDefault();
+});
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);

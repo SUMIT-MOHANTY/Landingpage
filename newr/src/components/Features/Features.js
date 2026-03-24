@@ -1,67 +1,96 @@
 import React from 'react';
+import Container from '../common/Container/Container';
 import './Features.css';
 
-/**
- * Features - Component to display the key features of the AI platform
- * Showcases benefits and capabilities in a visually appealing grid
- */
+// Define features with fallback images for cross-browser compatibility
+const featuresList = [
+  {
+    id: 'ai-writing',
+    title: 'AI-Powered Content Writing',
+    description: 'Create high-quality articles, blog posts, and marketing copy in seconds with advanced AI technology.',
+    icon: '/assets/icons/writing.svg',
+    fallbackIcon: '/assets/icons/writing.png'
+  },
+  {
+    id: 'multi-language',
+    title: 'Multi-Language Support',
+    description: 'Generate and translate content across 50+ languages to reach global audiences effortlessly.',
+    icon: '/assets/icons/globe.svg',
+    fallbackIcon: '/assets/icons/globe.png'
+  },
+  {
+    id: 'seo-optimization',
+    title: 'SEO Optimization',
+    description: 'AI tools analyze and enhance your content for better search engine rankings and visibility.',
+    icon: '/assets/icons/seo.svg',
+    fallbackIcon: '/assets/icons/seo.png'
+  },
+  {
+    id: 'plagiarism',
+    title: 'Plagiarism Detection',
+    description: 'Ensure your content is 100% original with built-in plagiarism checking against billions of web pages.',
+    icon: '/assets/icons/check.svg',
+    fallbackIcon: '/assets/icons/check.png'
+  },
+  {
+    id: 'templates',
+    title: 'Customizable Templates',
+    description: 'Choose from hundreds of pre-designed templates for various content types and industries.',
+    icon: '/assets/icons/template.svg',
+    fallbackIcon: '/assets/icons/template.png'
+  },
+  {
+    id: 'analytics',
+    title: 'Content Performance Analytics',
+    description: 'Track how your content performs with comprehensive analytics and improvement suggestions.',
+    icon: '/assets/icons/chart.svg',
+    fallbackIcon: '/assets/icons/chart.png'
+  }
+];
+
 const Features = () => {
-  const featuresList = [
-    {
-      id: 1,
-      icon: '',
-      title: 'Smart Content Creation',
-      description: 'Generate high-quality text content for blogs, social media, emails, and more with AI that understands your brand voice.'
-    },
-    {
-      id: 2,
-      icon: '',
-      title: 'Visual Generation',
-      description: 'Create stunning images, graphics, and designs from simple text descriptions in seconds.'
-    },
-    {
-      id: 3,
-      icon: '',
-      title: 'Advanced Learning',
-      description: 'Our AI continuously improves by learning from interactions, becoming more personalized to your specific needs.'
-    },
-    {
-      id: 4,
-      icon: '',
-      title: 'Instant Responses',
-      description: 'Get real-time AI-generated content with minimal latency, allowing for seamless workflow integration.'
-    },
-    {
-      id: 5,
-      icon: '',
-      title: 'Customizable Outputs',
-      description: 'Fine-tune AI outputs with adjustable parameters for tone, style, length, and complexity.'
-    },
-    {
-      id: 6,
-      icon: '',
-      title: 'Data Privacy Focus',
-      description: 'Enterprise-grade security ensures your data and AI interactions remain confidential and protected.'
+  // Handle SVG loading errors by switching to PNG fallback
+  const handleIconError = (e) => {
+    const target = e.target;
+    if (target.dataset.fallback) {
+      target.src = target.dataset.fallback;
+      target.onerror = null; // Prevent infinite error loop
     }
-  ];
+  };
 
   return (
-    <section id="features" className="features-section">
-      <h2>Powerful AI Features</h2>
-      <p className="section-intro">
-        Our generative AI platform empowers your creativity and productivity with these cutting-edge capabilities:
-      </p>
+    <Container className="features" background="light">
+      <div className="features-heading">
+        <h2 id="features-title">Powerful AI Content Features</h2>
+        <p>Our platform offers everything you need to create amazing content</p>
+      </div>
 
-      <div className="features-grid">
-        {featuresList.map(feature => (
-          <div key={feature.id} className="feature-card">
-            <div className="feature-icon">{feature.icon}</div>
-            <h3 className="feature-title">{feature.title}</h3>
-            <p className="feature-description">{feature.description}</p>
+      <div
+        className="features-grid"
+        role="list"
+        aria-labelledby="features-title"
+      >
+        {featuresList.map((feature) => (
+          <div
+            key={feature.id}
+            className="feature-card"
+            role="listitem"
+          >
+            <div className="feature-icon">
+              <img
+                src={feature.icon}
+                alt=""
+                aria-hidden="true"
+                data-fallback={feature.fallbackIcon}
+                onError={handleIconError}
+              />
+            </div>
+            <h3>{feature.title}</h3>
+            <p>{feature.description}</p>
           </div>
         ))}
       </div>
-    </section>
+    </Container>
   );
 };
 

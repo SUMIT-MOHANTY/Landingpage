@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Compatibility Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .test-container {
+      margin-bottom: 40px;
+    }
+    .test-section {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .test-section h3 {
+      margin-top: 0;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    .test-result {
+      margin: 10px 0;
+    }
+    .test-result.pass {
+      color: #28a745;
+    }
+    .test-result.fail {
+      color: #dc3545;
+    }
+    .test-result.warn {
+      color: #ffc107;
+    }
+    .test-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding: 8px 0;
+    }
+    .test-label {
+      font-weight: 500;
+    }
+    .test-value {
+      font-family: monospace;
+    }
+    .feature-test {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .grid-test, .flex-test, .css-vars-test {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .grid-test {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .flex-test {
+      display: flex;
+      justify-content: space-between;
+    }
+    .css-vars-test {
+      --test-color: #5a67d8;
+      color: var(--test-color);
+    }
+    .test-box {
+      background-color: #e9ecef;
+      padding: 10px;
+      text-align: center;
+    }
+    #webp-test img {
+      max-width: 100%;
+      height: auto;
+    }
+    #summary {
+      background-color: #e9ecef;
+      border-left: 5px solid #5a67d8;
+      padding: 15px;
+      margin-top: 30px;
+    }
+    @media (max-width: 600px) {
+      .feature-test {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Browser Compatibility Test</h1>
+
+  <div class="test-container">
+    <div class="test-section" id="browser-info">
+      <h3>Browser Information</h3>
+      <div id="browser-details"></div>
+    </div>
+
+    <div class="test-section" id="device-info">
+      <h3>Device Information</h3>
+      <div id="device-details"></div>
+    </div>
+
+    <div class="test-section" id="feature-tests">
+      <h3>Feature Tests</h3>
+
+      <h4>CSS Grid Test</h4>
+      <div class="grid-test">
+        <div class="test-box">Grid Item 1</div>
+        <div class="test-box">Grid Item 2</div>
+        <div class="test-box">Grid Item 3</div>
+        <div class="test-box">Grid Item 4</div>
+      </div>
+
+      <h4>CSS Flexbox Test</h4>
+      <div class="flex-test">
+        <div class="test-box">Flex Item 1</div>
+        <div class="test-box">Flex Item 2</div>
+        <div class="test-box">Flex Item 3</div>
+      </div>
+
+      <h4>CSS Variables Test</h4>
+      <div class="css-vars-test">
+        This text should be colored using a CSS variable (indigo).
+      </div>
+
+      <h4>WebP Image Support Test</h4>
+      <div id="webp-test">
+        <p>Testing WebP support...</p>
+      </div>
+
+      <h4>Performance API Test</h4>
+      <div id="performance-test"></div>
+
+      <h4>Intersection Observer Test</h4>
+      <div id="intersection-observer-test"></div>
+    </div>
+
+    <div id="summary">
+      <h3>Compatibility Summary</h3>
+      <div id="summary-details"></div>
+    </div>
+  </div>
+
+  <script>
+    // Function to create a test result item
+    function createTestItem(label, value, status = null) {
+      const item = document.createElement('div');
+      item.className = 'test-item';
+
+      const labelEl = document.createElement('span');
+      labelEl.className = 'test-label';
+      labelEl.textContent = label;
+
+      const valueEl = document.createElement('span');
+      valueEl.className = 'test-value';
+      if (status) valueEl.classList.add(status);
+      valueEl.textContent = value;
+
+      item.appendChild(labelEl);
+      item.appendChild(valueEl);
+
+      return item;
+    }
+
+    // Browser detection
+    function detectBrowser() {
+      const userAgent = navigator.userAgent;
+      let browserName = "Unknown";
+      let browserVersion = "Unknown";
+
+      if (userAgent.indexOf("Firefox") > -1) {
+        browserName = "Firefox";
+        browserVersion = userAgent.match(/Firefox\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("SamsungBrowser") > -1) {
+        browserName = "Samsung Browser";
+        browserVersion = userAgent.match(/SamsungBrowser\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) {
+        browserName = "Opera";
+        browserVersion = userAgent.indexOf("Opera") > -1
+          ? userAgent.match(/Opera\/([0-9.]+)/)[1]
+          : userAgent.match(/OPR\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Trident") > -1 || userAgent.indexOf("MSIE") > -1) {
+        browserName = "Internet Explorer";
+        browserVersion = userAgent.indexOf("MSIE") > -1
+          ? userAgent.match(/MSIE ([0-9.]+)/)[1]
+          : userAgent.match(/rv:([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Edge") > -1) {
+        browserName = "Edge (Legacy)";
+        browserVersion = userAgent.match(/Edge\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Edg") > -1) {
+        browserName = "Edge (Chromium)";
+        browserVersion = userAgent.match(/Edg\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Chrome") > -1) {
+        browserName = "Chrome";
+        browserVersion = userAgent.match(/Chrome\/([0-9.]+)/)[1];
+      } else if (userAgent.indexOf("Safari") > -1) {
+        browserName = "Safari";
+        browserVersion = userAgent.match(/Version\/([0-9.]+)/)[1];
+      }
+
+      return { name: browserName, version: browserVersion, userAgent: userAgent };
+    }
+
+    // Device detection
+    function detectDevice() {
+      const userAgent = navigator.userAgent;
+      let deviceType = "Unknown";
+      let isTouchDevice = false;
+
+      // Touch detection
+      isTouchDevice = ('ontouchstart' in window) ||
+                      (navigator.maxTouchPoints > 0) ||
+                      (navigator.msMaxTouchPoints > 0);
+
+      // Device type detection
+      if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(userAgent)) {
+        deviceType = "Tablet";
+      } else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(userAgent)) {
+        deviceType = "Mobile";
+      } else if (/(smart[-\s]?tv|hbbtv|appletv|googletv|hdmi|netcast|viera|nettv|roku|\bdtv\b|sonydtv|inettvbrowser|\btv\b)/i.test(userAgent)) {
+        deviceType = "TV";
+      } else {
+        deviceType = "Desktop";
+      }
+
+      return {
+        type: deviceType,
+        isTouchDevice: isTouchDevice,
+        screenWidth: window.innerWidth,
+        screenHeight: window.innerHeight,
+        pixelRatio: window.devicePixelRatio || 1
+      };
+    }
+
+    // Feature detection
+    function detectFeatures() {
+      const features = {
+        flexbox: typeof document.createElement('div').style.flexBasis !== 'undefined',
+        grid: typeof document.createElement('div').style.grid !== 'undefined',
+        cssVariables: window.CSS && window.CSS.supports && window.CSS.supports('--a', '0'),
+        fetch: typeof window.fetch !== 'undefined',
+        intersectionObserver: 'IntersectionObserver' in window,
+        performance: 'performance' in window
+      };
+
+      return features;
+    }
+
+    // WebP support detection
+    async function detectWebpSupport() {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = function() { resolve(true); };
+        img.onerror = function() { resolve(false); };
+        img.src = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
+      });
+    }
+
+    // Run tests and display results
+    async function runTests() {
+      // Browser info
+      const browser = detectBrowser();
+      const browserDetails = document.getElementById('browser-details');
+      browserDetails.appendChild(createTestItem('Browser', browser.name));
+      browserDetails.appendChild(createTestItem('Version', browser.version));
+      browserDetails.appendChild(createTestItem('User Agent', browser.userAgent));
+
+      // Device info
+      const device = detectDevice();
+      const deviceDetails = document.getElementById('device-details');
+      deviceDetails.appendChild(createTestItem('Device Type', device.type));
+      deviceDetails.appendChild(createTestItem('Touch Device', device.isTouchDevice ? 'Yes' : 'No'));
+      deviceDetails.appendChild(createTestItem('Screen Size', `${device.screenWidth}x${device.screenHeight}`));
+      deviceDetails.appendChild(createTestItem('Pixel Ratio', device.pixelRatio));
+
+      // Feature tests
+      const features = detectFeatures();
+      const featureTests = document.getElementById('feature-tests');
+
+      // Test WebP support
+      const webpSupport = await detectWebpSupport();
+      const webpTest = document.getElementById('webp-test');
+      webpTest.innerHTML = '';
+      if (webpSupport) {
+        webpTest.appendChild(createTestItem('WebP Support', 'Supported', 'pass'));
+        // Add a WebP image
+        const img = document.createElement('img');
+        img.src = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
+        img.alt = 'WebP test image';
+        webpTest.appendChild(img);
+      } else {
+        webpTest.appendChild(createTestItem('WebP Support', 'Not Supported', 'fail'));
+      }
+
+      // Performance API test
+      const perfTest = document.getElementById('performance-test');
+      if (features.performance) {
+        const perfTiming = performance.timing;
+        const loadTime = perfTiming.loadEventEnd - perfTiming.navigationStart;
+        perfTest.appendChild(createTestItem('Page Load Time', `${loadTime}ms`));
+
+        if (performance.memory) {
+          const memory = performance.memory;
+          perfTest.appendChild(createTestItem('JS Heap Size', `${Math.round(memory.totalJSHeapSize / (1024 * 1024))}MB`));
+        }
+      } else {
+        perfTest.appendChild(createTestItem('Performance API', 'Not Supported', 'warn'));
+      }
+
+      // Intersection Observer test
+      const ioTest = document.getElementById('intersection-observer-test');
+      if (features.intersectionObserver) {
+        ioTest.appendChild(createTestItem('Intersection Observer', 'Supported', 'pass'));
+      } else {
+        ioTest.appendChild(createTestItem('Intersection Observer', 'Not Supported', 'fail'));
+      }
+
+      // Summary
+      const summary = document.getElementById('summary-details');
+
+      // Calculate compatibility score
+      let score = 0;
+      let totalTests = 0;
+
+      // Browser-specific score
+      if (browser.name === "Internet Explorer") {
+        score += 0;
+      } else if (browser.name === "Edge (Legacy)") {
+        score += 70;
+      } else if (browser.name === "Safari" && parseFloat(browser.version) < 11) {
+        score += 60;
+      } else {
+        score += 100;
+      }
+      totalTests += 100;
+
+      // Feature-based score
+      const featureTests = {
+        flexbox: features.flexbox ? 15 : 0,
+        grid: features.grid ? 25 : 0,
+        cssVariables: features.cssVariables ? 20 : 0,
+        webpSupport: webpSupport ? 15 : 0,
+        intersectionObserver: features.intersectionObserver ? 15 : 0,
+        fetch: features.fetch ? 10 : 0
+      };
+
+      for (const test in featureTests) {
+        score += featureTests[test];
+        totalTests += test === 'webpSupport' ? 15 : (test === 'grid' ? 25 : (test === 'cssVariables' ? 20 : 15));
+      }
+
+      const compatibilityScore = Math.round((score / totalTests) * 100);
+      let compatibilityStatus = '';
+      let statusClass = '';
+
+      if (compatibilityScore >= 90) {
+        compatibilityStatus = 'Excellent';
+        statusClass = 'pass';
+      } else if (compatibilityScore >= 75) {
+        compatibilityStatus = 'Good';
+        statusClass = 'pass';
+      } else if (compatibilityScore >= 50) {
+        compatibilityStatus = 'Fair';
+        statusClass = 'warn';
+      } else {
+        compatibilityStatus = 'Poor';
+        statusClass = 'fail';
+      }
+
+      summary.appendChild(createTestItem('Compatibility Score', `${compatibilityScore}%`, statusClass));
+      summary.appendChild(createTestItem('Compatibility Status', compatibilityStatus, statusClass));
+
+      // Recommendations
+      const recommendations = document.createElement('div');
+      recommendations.style.marginTop = '15px';
+      recommendations.innerHTML = '<h4>Recommendations</h4>';
+
+      if (compatibilityScore < 90) {
+        const ul = document.createElement('ul');
+
+        if (!features.grid) {
+          const li = document.createElement('li');
+          li.textContent = 'Add CSS Grid polyfill for layout support';
+          ul.appendChild(li);
+        }
+
+        if (!features.cssVariables) {
+          const li = document.createElement('li');
+          li.textContent = 'Add CSS Variables polyfill for theming support';
+          ul.appendChild(li);
+        }
+
+        if (!webpSupport) {
+          const li = document.createElement('li');
+          li.textContent = 'Provide JPG/PNG fallbacks for WebP images';
+          ul.appendChild(li);
+        }
+
+        if (!features.intersectionObserver) {
+          const li = document.createElement('li');
+          li.textContent = 'Add Intersection Observer polyfill for lazy loading';
+          ul.appendChild(li);
+        }
+
+        if (browser.name === "Internet Explorer") {
+          const li = document.createElement('li');
+          li.textContent = 'Consider adding IE11 specific polyfills or a browser upgrade notice';
+          ul.appendChild(li);
+        }
+
+        recommendations.appendChild(ul);
+      } else {
+        const p = document.createElement('p');
+        p.textContent = 'Your browser is fully compatible with this application!';
+        recommendations.appendChild(p);
+      }
+
+      summary.appendChild(recommendations);
+    }
+
+    // Run tests when page loads
+    window.addEventListener('load', runTests);
+  </script>
+</body>
+</html>

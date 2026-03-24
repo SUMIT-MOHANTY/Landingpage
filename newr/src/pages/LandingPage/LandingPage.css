@@ -1,28 +1,146 @@
-/* LandingPage.css - Styles for the main landing page */
-
+/* Base styles with cross-browser compatibility */
 .landing-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  -webkit-transition: opacity 0.5s ease;
+  -moz-transition: opacity 0.5s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-main {
-  flex: 1;
+.landing-page.loaded {
+  opacity: 1;
 }
 
-.alternate-bg {
-  background-color: var(--background-alt);
+.landing-section {
+  opacity: 0;
+  transform: translateY(20px);
+  -webkit-transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  -webkit-transition: opacity 0.6s ease, -webkit-transform 0.6s ease;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  padding: 40px 20px;
 }
 
-/* Responsive styles */
-@media (max-width: 768px) {
-  .landing-page {
-    /* Mobile specific adjustments */
+.landing-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+  -webkit-transform: translateY(0);
+}
+
+/* Enhance focus styles for accessibility */
+a:focus, button:focus, input:focus, textarea:focus, select:focus, [tabindex]:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+/* If outline styles are not supported, use box-shadow as fallback */
+@supports not (outline-offset: 2px) {
+  a:focus, button:focus, input:focus, textarea:focus, select:focus, [tabindex]:focus {
+    box-shadow: 0 0 0 2px #4a90e2;
   }
 }
 
-@media (min-width: 769px) and (max-width: 1200px) {
+/* Loading container styles */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #4a90e2;
+  width: 40px;
+  height: 40px;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error container styles */
+.error-container {
+  text-align: center;
+  padding: 40px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.error-container button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+/* Mobile-specific adjustments */
+.landing-page.mobile .landing-section {
+  padding: 30px 15px;
+}
+
+/* Print styles for better accessibility */
+@media print {
   .landing-page {
-    /* Tablet specific adjustments */
+    color: black;
+    background: white;
+  }
+
+  .landing-section {
+    page-break-inside: avoid;
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Hide non-essential elements when printing */
+  button, .cta-section, header nav {
+    display: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .landing-page {
+    color: black;
+    background: white;
+  }
+
+  a, button {
+    color: black;
+    background: white;
+    border: 1px solid black;
+  }
+}
+
+/* Reduced motion preference support */
+@media (prefers-reduced-motion: reduce) {
+  .landing-page, .landing-section {
+    transition: none !important;
+    -webkit-transition: none !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    animation: none !important;
+    -webkit-animation: none !important;
   }
 }

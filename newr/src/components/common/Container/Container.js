@@ -1,41 +1,45 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './Container.css';
 
 /**
- * Container - Layout container component
- * Provides consistent width, padding and layout for content sections
+ * Container component with improved responsive behavior
  *
- * @param {string} className - Additional CSS classes
- * @param {node} children - Container content
- * @param {boolean} fluid - Whether container should be full width
- * @param {string} as - HTML element to render (div, section, etc)
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Container content
+ * @param {string} props.className - Additional CSS classes
+ * @param {string} props.width - Container width (default, narrow, wide, full)
+ * @param {string} props.padding - Container padding (default, small, large, none)
+ * @param {string} props.background - Container background (none, light, dark, primary)
  */
 const Container = ({
-  className = '',
   children,
-  fluid = false,
-  as: Component = 'div',
-  ...props
+  className = '',
+  width = 'default',
+  padding = 'default',
+  background = 'none',
+  testId,
+  ...rest
 }) => {
+  // Compute container classes for different display modes
   const containerClasses = [
     'container',
-    fluid ? 'container-fluid' : '',
+    `container-width-${width}`,
+    `container-padding-${padding}`,
+    `container-bg-${background}`,
     className
   ].filter(Boolean).join(' ');
 
   return (
-    <Component className={containerClasses} {...props}>
-      {children}
-    </Component>
+    <div
+      className={containerClasses}
+      data-testid={testId || 'container'}
+      {...rest}
+    >
+      <div className="container-inner">
+        {children}
+      </div>
+    </div>
   );
-};
-
-Container.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  fluid: PropTypes.bool,
-  as: PropTypes.elementType,
 };
 
 export default Container;

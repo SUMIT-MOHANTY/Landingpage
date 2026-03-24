@@ -1,123 +1,149 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Button from '../common/Button/Button';
 import './Header.css';
 
-/**
- * Header - Site header component with navigation
- * Includes responsive mobile menu and scroll behavior
- */
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const headerRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
-  // Handle scroll effect for header
+  // Close menu when clicking outside
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        menuOpen &&
+        headerRef.current &&
+        !headerRef.current.contains(event.target) &&
+        menuButtonRef.current !== event.target &&
+        !menuButtonRef.current?.contains(event.target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+
+    // Add scroll listener for header styling
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
-      setIsScrolled(scrollPosition > 50);
+      setIsScrolled(scrollPosition > 20);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    // Initialize scroll state
+    handleScroll();
 
+    // Set up event listeners
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Remove event listeners on cleanup
     return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [menuOpen]);
 
-  // Handle menu toggle
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  // Close menu on escape key
+  useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape' && menuOpen) {
+        setMenuOpen(false);
+      }
+    };
 
-    // Prevent body scroll when menu is open
-    if (!isMenuOpen) {
-      document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', handleEscKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [menuOpen]);
+
+  // Prevent body scroll when menu is open on mobile
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.classList.add('menu-open');
     } else {
-      document.body.style.overflow = 'auto';
-    }
-  };
-
-  // Handle navigation click
-  const handleNavClick = (e, sectionId) => {
-    e.preventDefault();
-
-    // Close menu if open
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-      document.body.style.overflow = 'auto';
+      document.body.classList.remove('menu-open');
     }
 
-    // Smooth scroll to section
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('menu-open');
+    };
+  }, [menuOpen]);
+
+  const toggleMenu = () => {
+    setMenuOpen(prevState => !prevState);
   };
 
   return (
-    <header className={`site-header ${isScrolled ? 'scrolled' : ''}`}>
+    <header
+      ref={headerRef}
+      className={`header ${isScrolled ? 'scrolled' : ''} ${menuOpen ? 'menu-active' : ''}`}
+    >
       <div className="header-container">
         <div className="logo">
-          <a href="/" className="logo-link">
-            <span className="logo-text">Generative AI</span>
+          <a href="/" aria-label="AI Content Pro Home">
+            AI Content Pro
           </a>
         </div>
 
-        <nav className={`main-nav ${isMenuOpen ? 'menu-open' : ''}`}>
-          <ul className="nav-list">
-            <li className="nav-item">
-              <a
-                href="#features"
-                className="nav-link"
-                onClick={(e) => handleNavClick(e, 'features')}
-              >
+        <button
+          ref={menuButtonRef}
+          className={`menu-toggle ${menuOpen ? 'active' : ''}`}
+          onClick={toggleMenu}
+          aria-expanded={menuOpen}
+          aria-controls="main-menu"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        >
+          <span className="menu-icon" aria-hidden="true"></span>
+        </button>
+
+        <nav
+          id="main-menu"
+          className={`main-nav ${menuOpen ? 'open' : ''}`}
+          aria-label="Main navigation"
+        >
+          <ul>
+            <li>
+              <a href="#features" onClick={() => setMenuOpen(false)}>
                 Features
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                href="#ai-examples"
-                className="nav-link"
-                onClick={(e) => handleNavClick(e, 'ai-examples')}
-              >
-                Examples
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                href="#pricing"
-                className="nav-link"
-                onClick={(e) => handleNavClick(e, 'pricing')}
-              >
+            <li>
+              <a href="#pricing" onClick={() => setMenuOpen(false)}>
                 Pricing
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                href="#faq"
-                className="nav-link"
-                onClick={(e) => handleNavClick(e, 'faq')}
-              >
-                FAQ
+            <li>
+              <a href="#examples" onClick={() => setMenuOpen(false)}>
+                Examples
+              </a>
+            </li>
+            <li>
+              <a href="/blog" onClick={() => setMenuOpen(false)}>
+                Blog
+              </a>
+            </li>
+            <li className="mobile-only">
+              <a href="/login" onClick={() => setMenuOpen(false)}>
+                Log In
+              </a>
+            </li>
+            <li className="mobile-only">
+              <a href="/signup" onClick={() => setMenuOpen(false)}>
+                Sign Up
               </a>
             </li>
           </ul>
-
-          <div className="nav-auth">
-            <Button variant="text" size="medium">Sign In</Button>
-            <Button variant="primary" size="medium">Get Started</Button>
-          </div>
         </nav>
 
-        <button
-          className={`menu-toggle ${isMenuOpen ? 'active' : ''}`}
-          onClick={toggleMenu}
-          aria-expanded={isMenuOpen}
-          aria-label="Toggle navigation menu"
-        >
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-        </button>
+        <div className="header-actions">
+          <a href="/login" className="login-link">
+            Log In
+          </a>
+          <Button variant="primary" size="small" onClick={() => window.location.href = '/signup'}>
+            Sign Up Free
+          </Button>
+        </div>
       </div>
     </header>
   );

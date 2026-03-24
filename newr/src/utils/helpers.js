@@ -1,116 +1,186 @@
 /**
- * Utility helper functions for the Generative AI landing page
+ * Collection of cross-browser compatible utility functions
+ * for React applications with browser compatibility fixes
  */
 
 /**
- * Debounce function to limit the rate at which a function can fire
- * Useful for resize handlers, scroll events, etc.
- *
- * @param {Function} func - The function to debounce
- * @param {number} wait - The debounce wait time in milliseconds
- * @param {boolean} immediate - Whether to trigger the function immediately
- * @returns {Function} - The debounced function
+ * Safely gets a nested property from an object without throwing errors
+ * @param {Object} obj - The object to access
+ * @param {string} path - Dot notation path to the property
+ * @param {*} defaultValue - Default value if property doesn't exist
+ * @returns {*} The value or defaultValue
  */
-export const debounce = (func, wait = 300, immediate = false) => {
-  let timeout;
+export const getNestedValue = (obj, path, defaultValue = null) => {
+  if (!obj || !path) return defaultValue;
 
-  return function executedFunction(...args) {
-    const context = this;
+  try {
+    const keys = path.split('.');
+    let result = obj;
 
-    const later = () => {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
+    for (const key of keys) {
+      if (result === undefined || result === null) return defaultValue;
+      result = result[key];
+    }
+
+    return result !== undefined ? result : defaultValue;
+  } catch (err) {
+    console.error('Error accessing nested value:', err);
+    return defaultValue;
+  }
+};
+
+/**
+ * Formats a date string in a cross-browser compatible way
+ * @param {string|Date} date - Date to format
+ * @param {string} format - Format string: 'short', 'medium', 'long'
+ * @param {string} locale - Locale string (default: en-US)
+ * @returns {string} Formatted date
+ */
+export const formatDate = (date, format = 'medium', locale = 'en-US') => {
+  try {
+    const dateObj = date instanceof Date ? date : new Date(date);
+
+    // Check for invalid date
+    if (isNaN(dateObj.getTime())) {
+      throw new Error('Invalid date');
+    }
+
+    // Options for different formats
+    const options = {
+      short: { month: 'numeric', day: 'numeric', year: '2-digit' },
+      medium: { month: 'short', day: 'numeric', year: 'numeric' },
+      long: { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }
     };
 
-    const callNow = immediate && !timeout;
+    // Fallback for browsers that don't support Intl
+    if (typeof Intl === 'undefined' || !Intl.DateTimeFormat) {
+      // Simple fallback formatting
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const month = months[dateObj.getMonth()];
+      const day = dateObj.getDate();
+      const year = dateObj.getFullYear();
+      return `${month} ${day}, ${year}`;
+    }
 
-    clearTimeout(timeout);
-
-    timeout = setTimeout(later, wait);
-
-    if (callNow) func.apply(context, args);
-  };
-};
-
-/**
- * Format a number with commas as thousands separators
- *
- * @param {number} num - The number to format
- * @returns {string} - Formatted number string
- */
-export const formatNumber = (num) => {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-};
-
-/**
- * Validate email address format
- *
- * @param {string} email - The email address to validate
- * @returns {boolean} - Whether the email is valid
- */
-export const isValidEmail = (email) => {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
-};
-
-/**
- * Get the current viewport dimensions
- *
- * @returns {Object} - Object containing width and height of viewport
- */
-export const getViewportDimensions = () => {
-  return {
-    width: window.innerWidth || document.documentElement.clientWidth,
-    height: window.innerHeight || document.documentElement.clientHeight
-  };
-};
-
-/**
- * Generate a unique ID (for keying elements, etc.)
- *
- * @param {string} prefix - Optional prefix for the ID
- * @returns {string} - Unique ID
- */
-export const generateId = (prefix = 'id') => {
-  return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
-};
-
-/**
- * Check if an element is in viewport
- *
- * @param {HTMLElement} element - The DOM element to check
- * @param {number} offset - Optional offset value
- * @returns {boolean} - Whether the element is in viewport
- */
-export const isElementInViewport = (element, offset = 0) => {
-  if (!element) return false;
-
-  const rect = element.getBoundingClientRect();
-
-  return (
-    rect.top >= 0 - offset &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + offset &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
-};
-
-/**
- * Smooth scroll to an element
- *
- * @param {string} elementId - ID of the element to scroll to
- * @param {number} offset - Optional offset from the top
- */
-export const scrollToElement = (elementId, offset = 0) => {
-  const element = document.getElementById(elementId);
-
-  if (element) {
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    });
+    return new Intl.DateTimeFormat(locale, options[format] || options.medium).format(dateObj);
+  } catch (err) {
+    console.error('Date formatting error:', err);
+    return '';
   }
+};
+
+/**
+ * Detects browser features with proper fallbacks
+ * @param {string} feature - Feature to detect
+ * @returns {boolean} True if feature is supported
+ */
+export const supportsFeature = (feature) => {
+  try {
+    switch (feature) {
+      case 'webp':
+        // Check for WebP support
+        const canvas = document.createElement('canvas');
+        if (canvas && canvas.getContext && canvas.getContext('2d')) {
+          return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+        }
+        return false;
+
+      case 'intersectionObserver':
+        return 'IntersectionObserver' in window;
+
+      case 'localStorage':
+        try {
+          localStorage.setItem('test', 'test');
+          localStorage.removeItem('test');
+          return true;
+        } catch (e) {
+          return false;
+        }
+
+      case 'touch':
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+      default:
+        return false;
+    }
+  } catch (err) {
+    console.error('Feature detection error:', err);
+    return false;
+  }
+};
+
+/**
+ * Debounces a function to improve performance
+ * @param {Function} fn - Function to debounce
+ * @param {number} delay - Delay in milliseconds
+ * @returns {Function} Debounced function
+ */
+export const debounce = (fn, delay = 300) => {
+  let timer = null;
+
+  return function(...args) {
+    const context = this;
+
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(() => {
+      fn.apply(context, args);
+      timer = null;
+    }, delay);
+  };
+};
+
+/**
+ * Safely executes a fetch request with timeout and error handling
+ * @param {string} url - URL to fetch
+ * @param {Object} options - Fetch options
+ * @param {number} timeout - Timeout in milliseconds
+ * @returns {Promise} Fetch response
+ */
+export const safeFetch = async (url, options = {}, timeout = 8000) => {
+  // Create abort controller for timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+
+    return response;
+  } catch (err) {
+    clearTimeout(timeoutId);
+
+    if (err.name === 'AbortError') {
+      throw new Error(`Request timeout after ${timeout}ms`);
+    }
+
+    throw err;
+  }
+};
+
+/**
+ * Generates a unique ID (for keys, etc.)
+ * @returns {string} Unique ID
+ */
+export const generateId = () => {
+  return Math.random().toString(36).substring(2, 9) +
+         Date.now().toString(36);
+};
+
+/**
+ * Tests if reduced motion is preferred by the user
+ * @returns {boolean} True if reduced motion is preferred
+ */
+export const prefersReducedMotion = () => {
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 };

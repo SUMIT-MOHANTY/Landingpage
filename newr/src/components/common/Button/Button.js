@@ -1,57 +1,92 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { forwardRef } from 'react';
 import './Button.css';
 
 /**
- * Button - Reusable button component
- * Configurable for different appearances and behaviors
+ * Button component with accessibility enhancements and cross-browser support
  *
- * @param {string} variant - Visual style: 'primary', 'secondary', 'outline', 'text'
- * @param {string} size - Size variant: 'small', 'medium', 'large'
- * @param {function} onClick - Click handler function
- * @param {boolean} isFullWidth - Whether button should take full container width
- * @param {boolean} disabled - Disabled state
- * @param {node} children - Button content
- * @param {string} className - Additional CSS classes
+ * @param {Object} props - Component props
+ * @param {string} props.children - Button text/content
+ * @param {string} props.variant - Button style variant (primary, secondary, tertiary)
+ * @param {string} props.size - Button size (small, medium, large)
+ * @param {function} props.onClick - Click handler function
+ * @param {boolean} props.disabled - Disabled state
+ * @param {boolean} props.isLoading - Loading state
+ * @param {string} props.type - Button type (button, submit, reset)
+ * @param {string} props.className - Additional CSS classes
+ * @param {Object} ref - Forwarded ref
  */
-const Button = ({
+const Button = forwardRef(({
+  children,
   variant = 'primary',
   size = 'medium',
   onClick,
-  isFullWidth = false,
   disabled = false,
-  children,
+  isLoading = false,
+  type = 'button',
   className = '',
-  ...props
-}) => {
+  ariaLabel,
+  ...rest
+}, ref) => {
+  // Compute button classes
   const buttonClasses = [
     'btn',
     `btn-${variant}`,
     `btn-${size}`,
-    isFullWidth ? 'btn-full-width' : '',
+    disabled ? 'btn-disabled' : '',
+    isLoading ? 'btn-loading' : '',
     className
   ].filter(Boolean).join(' ');
 
+  // Handle click with improved error handling
+  const handleClick = (e) => {
+    if (disabled || isLoading) {
+      e.preventDefault();
+      return;
+    }
+
+    if (onClick) {
+      try {
+        onClick(e);
+      } catch (error) {
+        console.error('Error in button click handler:', error);
+      }
+    }
+  };
+
+  // For screen readers, add context when button is loading or disabled
+  const getAriaLabel = () => {
+    if (ariaLabel) return ariaLabel;
+    if (typeof children === 'string') {
+      if (isLoading) return `${children}, loading`;
+      if (disabled) return `${children}, disabled`;
+      return children;
+    }
+    return undefined;
+  };
+
   return (
     <button
+      ref={ref}
       className={buttonClasses}
-      onClick={onClick}
-      disabled={disabled}
-      {...props}
+      onClick={handleClick}
+      disabled={disabled || isLoading}
+      type={type}
+      aria-label={getAriaLabel()}
+      aria-busy={isLoading}
+      aria-disabled={disabled}
+      {...rest}
     >
-      {children}
+      {isLoading && (
+        <span className="btn-spinner" aria-hidden="true"></span>
+      )}
+      <span className={isLoading ? 'btn-text-with-spinner' : ''}>
+        {children}
+      </span>
     </button>
   );
-};
+});
 
-Button.propTypes = {
-  variant: PropTypes.oneOf(['primary', 'secondary', 'outline', 'text']),
-  size: PropTypes.oneOf(['small', 'medium', 'large']),
-  onClick: PropTypes.func,
-  isFullWidth: PropTypes.bool,
-  disabled: PropTypes.bool,
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-};
+// Add display name for better debugging
+Button.displayName = 'Button';
 
 export default Button;

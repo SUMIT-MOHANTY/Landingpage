@@ -1,71 +1,153 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Container from '../common/Container/Container';
 import Button from '../common/Button/Button';
 import './Hero.css';
 
-/**
- * Hero - Main hero section of the landing page
- * Features headline, subheadline, CTA buttons and visual element
- */
 const Hero = () => {
+  const [currentWord, setCurrentWord] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Words to animate through in the hero headline
+  const dynamicWords = ['Blogs', 'Emails', 'Ads', 'Reports', 'Stories'];
+
+  // Detect if hero is in viewport for animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Set visibility based on intersection
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    // Fallback for browsers that don't support IntersectionObserver
+    if (!('IntersectionObserver' in window)) {
+      setIsVisible(true);
+      return;
+    }
+
+    // Target the hero element
+    const heroElement = document.querySelector('.hero');
+    if (heroElement) {
+      observer.observe(heroElement);
+    }
+
+    return () => {
+      if (heroElement) {
+        observer.unobserve(heroElement);
+      }
+    };
+  }, []);
+
+  // Dynamic word rotation animation
+  useEffect(() => {
+    // Only start animation if hero is visible
+    if (!isVisible) return;
+
+    const rotateWords = () => {
+      setIsAnimating(true);
+
+      // After animation out completes
+      const timeout1 = setTimeout(() => {
+        setCurrentWord((prevWord) => (prevWord + 1) % dynamicWords.length);
+
+        // After changing word, start animation in
+        const timeout2 = setTimeout(() => {
+          setIsAnimating(false);
+        }, 100);
+
+        return () => clearTimeout(timeout2);
+      }, 500);
+
+      return () => clearTimeout(timeout1);
+    };
+
+    // Set up interval for word rotation
+    const interval = setInterval(rotateWords, 3000);
+
+    return () => clearInterval(interval);
+  }, [isVisible, dynamicWords.length]);
+
   return (
-    <section className="hero-section">
-      <div className="hero-container">
-        <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="highlight">Generative AI</span> That Transforms Ideas Into Reality
-          </h1>
+    <Container className="hero">
+      <div className={`hero-content ${isVisible ? 'visible' : ''}`}>
+        <h1>
+          AI-Powered Content Creation for Amazing{' '}
+          <span className="dynamic-text-container">
+            <span
+              className={`dynamic-text ${isAnimating ? 'animating' : ''}`}
+              aria-live="polite"
+            >
+              {dynamicWords[currentWord]}
+            </span>
+          </span>
+        </h1>
 
-          <p className="hero-subtitle">
-            Harness the power of advanced artificial intelligence to create stunning content,
-            generate creative solutions, and streamline your workflow with our intuitive platform.
-          </p>
+        <p className="hero-description">
+          Create professional content 10x faster with our advanced AI writing platform.
+          Get high-quality, SEO-optimized content for any need in seconds.
+        </p>
 
-          <div className="hero-cta">
-            <Button variant="primary" size="large">
-              Start Creating Free
-            </Button>
-            <Button variant="outline" size="large">
-              View Demo
-            </Button>
-          </div>
-
-          <div className="hero-stats">
-            <div className="stat-item">
-              <span className="stat-number">10M+</span>
-              <span className="stat-label">Creations Generated</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">50K+</span>
-              <span className="stat-label">Active Users</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">99.9%</span>
-              <span className="stat-label">Uptime</span>
-            </div>
-          </div>
+        <div className="hero-actions">
+          <Button variant="primary" size="large" onClick={() => window.location.href = '/signup'}>
+            Get Started Free
+          </Button>
+          <Button variant="secondary" size="large" onClick={() => window.location.href = '/demo'}>
+            Watch Demo
+          </Button>
         </div>
 
-        <div className="hero-visual">
-          <div className="hero-image-container">
-            <img
-              src="/assets/images/ai-generation-visual.svg"
-              alt="AI Generation Visualization"
-              className="hero-image"
-            />
-
-            <div className="floating-badge top-left">
-              <span className="badge-icon"></span>
-              <span className="badge-text">Smart Analysis</span>
-            </div>
-
-            <div className="floating-badge bottom-right">
-              <span className="badge-icon"></span>
-              <span className="badge-text">Instant Results</span>
-            </div>
+        <div className="hero-trust">
+          <p>Trusted by 10,000+ content creators worldwide</p>
+          <div className="trust-logos">
+            {/* Use picture element for better browser compatibility */}
+            <picture>
+              <source srcSet="/assets/images/trust-logos.webp" type="image/webp" />
+              <source srcSet="/assets/images/trust-logos.png" type="image/png" />
+              <img
+                src="/assets/images/trust-logos.png"
+                alt="Companies that trust our platform"
+                loading="lazy"
+              />
+            </picture>
           </div>
         </div>
       </div>
-    </section>
+
+      <div className={`hero-image ${isVisible ? 'visible' : ''}`}>
+        {/* Use picture element for better browser compatibility */}
+        <picture>
+          <source
+            srcSet="/assets/images/hero-image.webp"
+            type="image/webp"
+            media="(min-width: 768px)"
+          />
+          <source
+            srcSet="/assets/images/hero-image-mobile.webp"
+            type="image/webp"
+            media="(max-width: 767px)"
+          />
+          <source
+            srcSet="/assets/images/hero-image.png"
+            type="image/png"
+            media="(min-width: 768px)"
+          />
+          <source
+            srcSet="/assets/images/hero-image-mobile.png"
+            type="image/png"
+            media="(max-width: 767px)"
+          />
+          <img
+            src="/assets/images/hero-image.png"
+            alt="AI content creation platform interface"
+            loading="eager"
+          />
+        </picture>
+      </div>
+    </Container>
   );
 };
 

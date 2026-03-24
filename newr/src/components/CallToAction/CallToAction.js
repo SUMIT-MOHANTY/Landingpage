@@ -1,64 +1,154 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Container from '../common/Container/Container';
 import Button from '../common/Button/Button';
 import './CallToAction.css';
 
-/**
- * CallToAction - Component for the call-to-action section
- * Encourages visitors to sign up or try the AI service
- */
 const CallToAction = () => {
-  const handleSignUp = (e) => {
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [formStatus, setFormStatus] = useState({
+    status: 'idle', // idle, submitting, success, error
+    message: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [touchedFields, setTouchedFields] = useState({});
+
+  // Form validation
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Email validation with regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Name validation
+    if (!name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleBlur = (field) => {
+    setTouchedFields(prev => ({ ...prev, [field]: true }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle signup logic - would connect to backend API in a real implementation
-    alert('Sign up functionality would be implemented here');
+
+    // Don't submit if already submitting
+    if (formStatus.status === 'submitting') {
+      return;
+    }
+
+    // Validate all fields on submit
+    const isValid = validateForm();
+    setTouchedFields({ name: true, email: true });
+
+    if (!isValid) {
+      return;
+    }
+
+    try {
+      setFormStatus({ status: 'submitting', message: '' });
+
+      // Simulate API call with timeout
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Success state
+      setFormStatus({
+        status: 'success',
+        message: 'Thank you for signing up! Check your email for confirmation.'
+      });
+
+      // Reset form
+      setEmail('');
+      setName('');
+      setTouchedFields({});
+
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setFormStatus({
+        status: 'error',
+        message: 'Something went wrong. Please try again later.'
+      });
+    }
   };
 
   return (
-    <section id="cta" className="cta-section">
-      <div className="cta-container">
-        <h2>Ready to Experience the Power of AI?</h2>
-        <p className="cta-description">
-          Join thousands of innovators, creators, and businesses already leveraging
-          our generative AI platform to transform their workflows and unlock new possibilities.
-        </p>
+    <Container className="call-to-action">
+      <div className="cta-content">
+        <h2>Ready to Transform Your Content?</h2>
+        <p>Join thousands of content creators using our AI tools</p>
 
-        <form className="cta-form" onSubmit={handleSignUp}>
+        <form onSubmit={handleSubmit} noValidate className="cta-form" aria-live="polite">
           <div className="form-group">
+            <label htmlFor="name" className="visually-hidden">Full Name</label>
             <input
-              type="email"
-              placeholder="Enter your email address"
-              className="email-input"
-              required
-              aria-label="Email Address"
+              id="name"
+              type="text"
+              placeholder="Your Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => handleBlur('name')}
+              aria-invalid={!!(touchedFields.name && errors.name)}
+              aria-describedby="name-error"
+              disabled={formStatus.status === 'submitting' || formStatus.status === 'success'}
+              className={touchedFields.name && errors.name ? 'error' : ''}
             />
-            <Button
-              type="submit"
-              variant="primary"
-              size="large"
-            >
-              Get Started Free
-            </Button>
+            {touchedFields.name && errors.name && (
+              <div id="name-error" className="error-message">{errors.name}</div>
+            )}
           </div>
-          <p className="form-disclaimer">
-            No credit card required. Free plan includes 100 AI generations per month.
-          </p>
-        </form>
 
-        <div className="cta-testimonial">
-          <p className="testimonial-quote">
-            "This generative AI platform has revolutionized our content creation process,
-            saving us 15+ hours per week while improving quality."
-          </p>
-          <div className="testimonial-author">
-            <img src="/assets/images/testimonial-avatar.jpg" alt="Sarah J." className="author-image" />
-            <div className="author-details">
-              <p className="author-name">Sarah Johnson</p>
-              <p className="author-title">Creative Director, DesignCo</p>
-            </div>
+          <div className="form-group">
+            <label htmlFor="email" className="visually-hidden">Email Address</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Your Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => handleBlur('email')}
+              aria-invalid={!!(touchedFields.email && errors.email)}
+              aria-describedby="email-error"
+              disabled={formStatus.status === 'submitting' || formStatus.status === 'success'}
+              className={touchedFields.email && errors.email ? 'error' : ''}
+            />
+            {touchedFields.email && errors.email && (
+              <div id="email-error" className="error-message">{errors.email}</div>
+            )}
           </div>
-        </div>
+
+          <Button
+            type="submit"
+            disabled={formStatus.status === 'submitting' || formStatus.status === 'success'}
+            isLoading={formStatus.status === 'submitting'}
+            variant="primary"
+            size="large"
+            ariaLabel={formStatus.status === 'submitting' ? 'Submitting your information' : 'Get Started Now'}
+          >
+            Get Started Now
+          </Button>
+
+          {formStatus.message && (
+            <div
+              className={`form-message ${formStatus.status === 'error' ? 'error' : 'success'}`}
+              role="alert"
+            >
+              {formStatus.message}
+            </div>
+          )}
+        </form>
       </div>
-    </section>
+    </Container>
   );
 };
 
