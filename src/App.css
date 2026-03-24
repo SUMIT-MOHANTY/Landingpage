@@ -1,0 +1,126 @@
+/* Global Styles */
+:root {
+  --primary-color: #4f46e5;
+  --secondary-color: #8b5cf6;
+  --background-color: #ffffff;
+  --text-color: #1f2937;
+  --accent-color: #10b981;
+  --light-gray: #f3f4f6;
+  --dark-gray: #4b5563;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  line-height: 1.5;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section {
+  padding: 80px 0;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border: 1px solid var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #4338ca;
+  border-color: #4338ca;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn-secondary:hover {
+  background-color: #f9fafb;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .section {
+    padding: 60px 0;
+  }
+}
+/* Dark mode styles */
+.dark-theme {
+  --primary-color: #6366f1;
+  --secondary-color: #a78bfa;
+  --background-color: #111827;
+  --text-color: #e5e7eb;
+  --accent-color: #10b981;
+  --light-gray: #374151;
+  --dark-gray: #9ca3af;
+}
+
+.dark-theme .btn-secondary {
+  background-color: #1f2937;
+  color: var(--primary-color);
+}
+
+.dark-theme .btn-secondary:hover {
+  background-color: #374151;
+}
+
+/* Transition for theme switching */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

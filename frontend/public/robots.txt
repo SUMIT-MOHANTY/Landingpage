@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Optimize crawling
+Sitemap: https://example.com/sitemap.xml
