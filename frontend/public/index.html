@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>TaskFlow - Task Management Simplified</title>
+
+  <!-- Performance optimizations -->
+  <meta name="description" content="TaskFlow helps you organize, track and complete your tasks efficiently">
+
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Critical CSS inline -->
+  <style>
+    /* Critical CSS for above-the-fold content */
+    body{margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;background:#F7F9FB}
+    .hero{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;padding:2rem 1rem;background:linear-gradient(135deg,#4A6FA5,#166088);color:#fff;text-align:center}
+    .hero h1{font-size:clamp(2rem,5vw,3.5rem);margin-bottom:1rem}
+    .container{width:100%;max-width:1200px;margin:0 auto;padding:0 15px}
+    .btn{display:inline-block;padding:0.75rem 1.5rem;background:#4ECDC4;color:#fff;text-decoration:none;border-radius:4px;font-weight:600}
+  </style>
+
+  <!-- Deferred non-critical CSS -->
+  <link rel="stylesheet" href="css/main.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="css/main.css"></noscript>
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="js/main.js" as="script">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
+
+  <!-- Browser hints -->
+  <link rel="dns-prefetch" href="https://api.taskflow.example">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <a href="/">TaskFlow</a>
+        </div>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="/login" class="btn btn-small">Login</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Task Management Simplified</h1>
+        <p>Organize your tasks, boost productivity, and achieve your goals with our intuitive task management platform.</p>
+        <a href="/signup" class="btn">Get Started - It's Free</a>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="container">
+        <h2>Features that make task management effortless</h2>
+        <div class="features">
+          <!-- Using lazy loading for images -->
+          <div class="feature-card">
+            <img class="lazy" data-src="images/organize.svg" alt="Organization" width="64" height="64">
+            <h3>Smart Organization</h3>
+            <p>Create projects, set priorities, and organize tasks your way.</p>
+          </div>
+          <div class="feature-card">
+            <img class="lazy" data-src="images/collaborate.svg" alt="Collaboration" width="64" height="64">
+            <h3>Team Collaboration</h3>
+            <p>Share projects, assign tasks, and work together seamlessly.</p>
+          </div>
+          <div class="feature-card">
+            <img class="lazy" data-src="images/analytics.svg" alt="Analytics" width="64" height="64">
+            <h3>Productivity Analytics</h3>
+            <p>Track your progress with visual reports and statistics.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="testimonials" class="section">
+      <div class="container">
+        <h2>What our customers say</h2>
+        <div class="testimonials">
+          <!-- Testimonial content would go here -->
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="section">
+      <div class="container">
+        <h2>Simple, transparent pricing</h2>
+        <div class="pricing-plans">
+          <!-- Pricing content would go here -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-col">
+          <h4>TaskFlow</h4>
+          <p>Simplify your task management and boost productivity.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 TaskFlow. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Defer JavaScript loading for better performance -->
+  <script src="js/main.js" defer></script>
+</body>
+</html>
