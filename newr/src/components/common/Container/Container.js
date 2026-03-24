@@ -1,41 +1,44 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './Container.css';
 
 /**
- * Container - Layout container component
- * Provides consistent width, padding and layout for content sections
- *
- * @param {string} className - Additional CSS classes
- * @param {node} children - Container content
- * @param {boolean} fluid - Whether container should be full width
- * @param {string} as - HTML element to render (div, section, etc)
+ * Responsive container component that adapts to different screen sizes
+ * @param {Object} props - Component props
+ * @param {string} [props.size='default'] - Container size (narrow, default, wide, fluid)
+ * @param {string} [props.padding='default'] - Container padding (none, small, default, large)
+ * @param {React.ReactNode} props.children - Container content
+ * @param {string} [props.as='div'] - HTML element to render as
+ * @param {string} [props.id] - Container ID
+ * @param {string} [props.className] - Additional CSS classes
+ * @returns {React.ReactElement} - Rendered container
  */
 const Container = ({
-  className = '',
+  size = 'default',
+  padding = 'default',
   children,
-  fluid = false,
-  as: Component = 'div',
+  as = 'div',
+  id,
+  className = '',
   ...props
 }) => {
-  const containerClasses = [
-    'container',
-    fluid ? 'container-fluid' : '',
-    className
-  ].filter(Boolean).join(' ');
+  const containerClasses = `
+    container
+    container--${size}
+    container--padding-${padding}
+    ${className}
+  `.trim();
+
+  const Element = as;
 
   return (
-    <Component className={containerClasses} {...props}>
+    <Element
+      className={containerClasses}
+      id={id}
+      {...props}
+    >
       {children}
-    </Component>
+    </Element>
   );
-};
-
-Container.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  fluid: PropTypes.bool,
-  as: PropTypes.elementType,
 };
 
 export default Container;

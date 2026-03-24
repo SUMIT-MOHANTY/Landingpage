@@ -1,124 +1,116 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Button from '../common/Button/Button';
+import Container from '../common/Container/Container';
+import { createFocusTrap, isMobileDevice } from '../../utils/helpers';
 import './Header.css';
 
 /**
- * Header - Site header component with navigation
- * Includes responsive mobile menu and scroll behavior
+ * Responsive and accessible header component
+ * @returns {React.ReactElement} - Rendered header
  */
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const focusTrapRef = useRef(null);
 
-  // Handle scroll effect for header
+  // Close mobile menu when window is resized to desktop
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setIsScrolled(scrollPosition > 50);
+    const handleResize = () => {
+      if (!isMobileDevice() && menuOpen) {
+        setMenuOpen(false);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [menuOpen]);
+
+  // Create focus trap for mobile menu
+  useEffect(() => {
+    if (menuOpen && menuRef.current) {
+      focusTrapRef.current = createFocusTrap(menuRef.current);
+      focusTrapRef.current.activate();
+    }
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      if (focusTrapRef.current) {
+        focusTrapRef.current.deactivate();
+      }
     };
-  }, []);
+  }, [menuOpen]);
 
-  // Handle menu toggle
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-
-    // Prevent body scroll when menu is open
-    if (!isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  };
-
-  // Handle navigation click
-  const handleNavClick = (e, sectionId) => {
-    e.preventDefault();
-
-    // Close menu if open
-    if (isMenuOpen) {
-      setIsMenuOpen(false);
-      document.body.style.overflow = 'auto';
-    }
-
-    // Smooth scroll to section
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
+    setMenuOpen(!menuOpen);
+    // Set aria-expanded attribute on menu button
+    document.getElementById('menu-button').setAttribute('aria-expanded', !menuOpen);
   };
 
   return (
-    <header className={`site-header ${isScrolled ? 'scrolled' : ''}`}>
-      <div className="header-container">
-        <div className="logo">
-          <a href="/" className="logo-link">
-            <span className="logo-text">Generative AI</span>
+    <header className="header" role="banner">
+      <Container size="default" className="header__container">
+        <div className="header__logo">
+          <a href="/" aria-label="Home">
+            <span className="logo-text">GenAI Platform</span>
           </a>
         </div>
 
-        <nav className={`main-nav ${isMenuOpen ? 'menu-open' : ''}`}>
-          <ul className="nav-list">
-            <li className="nav-item">
-              <a
-                href="#features"
-                className="nav-link"
-                onClick={(e) => handleNavClick(e, 'features')}
-              >
-                Features
-              </a>
+        {/* Mobile menu toggle button */}
+        <button
+          id="menu-button"
+          className="header__menu-toggle"
+          onClick={toggleMenu}
+          aria-expanded={menuOpen}
+          aria-controls="navigation-menu"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+        >
+          <span className="sr-only">{menuOpen ? "Close menu" : "Menu"}</span>
+          <div className={`hamburger ${menuOpen ? 'hamburger--active' : ''}`}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
+
+        {/* Navigation menu */}
+        <nav
+          id="navigation-menu"
+          ref={menuRef}
+          className={`header__nav ${menuOpen ? 'header__nav--open' : ''}`}
+          aria-label="Main Navigation"
+          aria-hidden={isMobileDevice() && !menuOpen}
+        >
+          <ul className="header__nav-list">
+            <li className="header__nav-item">
+              <a href="#features" className="header__nav-link">Features</a>
             </li>
-            <li className="nav-item">
-              <a
-                href="#ai-examples"
-                className="nav-link"
-                onClick={(e) => handleNavClick(e, 'ai-examples')}
-              >
-                Examples
-              </a>
+            <li className="header__nav-item">
+              <a href="#examples" className="header__nav-link">Examples</a>
             </li>
-            <li className="nav-item">
-              <a
-                href="#pricing"
-                className="nav-link"
-                onClick={(e) => handleNavClick(e, 'pricing')}
-              >
-                Pricing
-              </a>
+            <li className="header__nav-item">
+              <a href="#pricing" className="header__nav-link">Pricing</a>
             </li>
-            <li className="nav-item">
-              <a
-                href="#faq"
-                className="nav-link"
-                onClick={(e) => handleNavClick(e, 'faq')}
-              >
-                FAQ
-              </a>
+            <li className="header__nav-item">
+              <a href="#docs" className="header__nav-link">Documentation</a>
             </li>
           </ul>
-
-          <div className="nav-auth">
-            <Button variant="text" size="medium">Sign In</Button>
-            <Button variant="primary" size="medium">Get Started</Button>
+          <div className="header__cta">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => window.location.href = '/login'}
+            >
+              Log In
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => window.location.href = '/signup'}
+            >
+              Sign Up
+            </Button>
           </div>
         </nav>
-
-        <button
-          className={`menu-toggle ${isMenuOpen ? 'active' : ''}`}
-          onClick={toggleMenu}
-          aria-expanded={isMenuOpen}
-          aria-label="Toggle navigation menu"
-        >
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-        </button>
-      </div>
+      </Container>
     </header>
   );
 };

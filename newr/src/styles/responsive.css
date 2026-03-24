@@ -1,0 +1,141 @@
+/* Responsive CSS - Mobile First Approach */
+
+/* Base styles (mobile first) */
+:root {
+  /* Responsive typography */
+  --font-size-base: 1rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+}
+
+/* Small devices (576px and up) */
+@media (min-width: 576px) {
+  :root {
+    --font-size-base: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1.25rem;
+    --font-size-lg: 1.5rem;
+    --font-size-xl: 1.75rem;
+    --font-size-xxl: 2.25rem;
+
+    --spacing-xs: 0.75rem;
+    --spacing-sm: 1.25rem;
+    --spacing-md: 1.75rem;
+    --spacing-lg: 2.5rem;
+    --spacing-xl: 3.5rem;
+  }
+}
+
+/* Medium devices (768px and up) */
+@media (min-width: 768px) {
+  :root {
+    --font-size-base: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1.25rem;
+    --font-size-lg: 1.5rem;
+    --font-size-xl: 2rem;
+    --font-size-xxl: 2.5rem;
+  }
+
+  .mobile-only {
+    display: none !important;
+  }
+
+  .desktop-only {
+    display: block !important;
+  }
+}
+
+/* Large devices (992px and up) */
+@media (min-width: 992px) {
+  :root {
+    --font-size-base: 1.125rem;
+    --font-size-sm: 1rem;
+    --font-size-md: 1.375rem;
+    --font-size-lg: 1.75rem;
+    --font-size-xl: 2.25rem;
+    --font-size-xxl: 2.75rem;
+
+    --spacing-xs: 1rem;
+    --spacing-sm: 1.5rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 3rem;
+    --spacing-xl: 4rem;
+  }
+}
+
+/* Extra large devices (1200px and up) */
+@media (min-width: 1200px) {
+  :root {
+    --font-size-base: 1.125rem;
+    --font-size-sm: 1rem;
+    --font-size-md: 1.375rem;
+    --font-size-lg: 1.75rem;
+    --font-size-xl: 2.5rem;
+    --font-size-xxl: 3rem;
+  }
+
+  .container {
+    max-width: 1140px;
+  }
+}
+
+/* Utility classes for responsive design */
+.hidden-mobile {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hidden-mobile {
+    display: block;
+  }
+
+  .hidden-desktop {
+    display: none;
+  }
+}
+
+/* Focus visible utility - improves accessibility */
+.focus-visible:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Skip navigation - accessibility feature */
+.skip-nav {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary);
+  color: white;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-nav:focus {
+  top: 0;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

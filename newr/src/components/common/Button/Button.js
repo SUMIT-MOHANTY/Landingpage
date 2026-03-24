@@ -1,57 +1,57 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './Button.css';
+import { handleKeyboardActivation } from '../../../utils/helpers';
 
 /**
- * Button - Reusable button component
- * Configurable for different appearances and behaviors
- *
- * @param {string} variant - Visual style: 'primary', 'secondary', 'outline', 'text'
- * @param {string} size - Size variant: 'small', 'medium', 'large'
- * @param {function} onClick - Click handler function
- * @param {boolean} isFullWidth - Whether button should take full container width
- * @param {boolean} disabled - Disabled state
- * @param {node} children - Button content
- * @param {string} className - Additional CSS classes
+ * Accessible and responsive button component
+ * @param {Object} props - Component props
+ * @param {string} [props.variant='primary'] - Button variant (primary, secondary, tertiary)
+ * @param {string} [props.size='md'] - Button size (sm, md, lg)
+ * @param {string} [props.type='button'] - Button type attribute
+ * @param {Function} [props.onClick] - Click handler function
+ * @param {string} [props.ariaLabel] - Accessible label for screen readers
+ * @param {boolean} [props.isFullWidth=false] - Whether button takes full width
+ * @param {boolean} [props.disabled=false] - Whether button is disabled
+ * @param {React.ReactNode} props.children - Button content
+ * @returns {React.ReactElement} - Rendered button component
  */
 const Button = ({
   variant = 'primary',
-  size = 'medium',
+  size = 'md',
+  type = 'button',
   onClick,
+  ariaLabel,
   isFullWidth = false,
   disabled = false,
-  children,
   className = '',
+  children,
   ...props
 }) => {
-  const buttonClasses = [
-    'btn',
-    `btn-${variant}`,
-    `btn-${size}`,
-    isFullWidth ? 'btn-full-width' : '',
-    className
-  ].filter(Boolean).join(' ');
+  const buttonClasses = `
+    button
+    button--${variant}
+    button--${size}
+    ${isFullWidth ? 'button--full-width' : ''}
+    ${className}
+  `.trim();
+
+  // Handle keyboard navigation for div/span button replacements
+  const onKeyDown = props.role === 'button' ? handleKeyboardActivation(onClick) : undefined;
 
   return (
     <button
+      type={type}
       className={buttonClasses}
       onClick={onClick}
+      onKeyDown={onKeyDown}
       disabled={disabled}
+      aria-label={ariaLabel}
+      aria-disabled={disabled}
       {...props}
     >
       {children}
     </button>
   );
-};
-
-Button.propTypes = {
-  variant: PropTypes.oneOf(['primary', 'secondary', 'outline', 'text']),
-  size: PropTypes.oneOf(['small', 'medium', 'large']),
-  onClick: PropTypes.func,
-  isFullWidth: PropTypes.bool,
-  disabled: PropTypes.bool,
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
 };
 
 export default Button;

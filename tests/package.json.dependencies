@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "puppeteer": "^13.0.0",
+    "lighthouse": "^9.0.0",
+    "axe-core": "^4.3.5"
+  },
+  "scripts": {
+    "test:browsers": "node tests/run-browser-tests.js",
+    "test:accessibility": "node node_modules/axe-core/axe.js"
+  }
+}

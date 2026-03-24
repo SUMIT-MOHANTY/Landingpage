@@ -1,0 +1,108 @@
+/* Mobile-specific optimizations */
+
+/* Touch-friendly tap targets */
+button,
+.button,
+a.button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+select,
+.nav-link,
+.menu-item a {
+  min-height: 44px; /* Apple's recommended minimum tap target size */
+  min-width: 44px;
+  padding: 12px; /* Ensure enough padding for touch targets */
+}
+
+/* Fix for iOS input zoom issues */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+
+  /* Fix for iOS fixed position issues */
+  .fixed-element {
+    position: sticky;
+    top: 0;
+    /* Use position: sticky instead of fixed when possible */
+  }
+
+  /* Improve touch scrolling */
+  .scrollable-element {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+}
+
+/* Fix for iOS momentum scrolling */
+html, body {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for hover states on touch devices */
+@media (hover: hover) {
+  /* Only apply hover styles on devices that support hover */
+  a:hover, button:hover {
+    opacity: 0.8;
+  }
+}
+
+/* Fix for older Android browser viewport issues */
+@-ms-viewport {
+  width: device-width;
+}
+
+/* Adjust font sizes for small screens */
+@media screen and (max-width: 320px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+}
+
+/* Fix for iOS notch area */
+@supports (padding: max(0px)) {
+  .header,
+  .footer,
+  .fixed-bottom {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  .fixed-bottom {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .header {
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+}
+
+/* Fix for iOS overscroll */
+html {
+  background-color: #fff; /* Match your site background */
+  overflow-x: hidden;
+}
+
+/* Prevent content from being hidden under virtual keyboards */
+.virtual-keyboard-padding {
+  padding-bottom: 40vh;
+}

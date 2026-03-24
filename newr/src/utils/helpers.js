@@ -1,116 +1,123 @@
 /**
- * Utility helper functions for the Generative AI landing page
+ * Utility functions for accessibility and responsive design
  */
 
 /**
- * Debounce function to limit the rate at which a function can fire
- * Useful for resize handlers, scroll events, etc.
- *
- * @param {Function} func - The function to debounce
- * @param {number} wait - The debounce wait time in milliseconds
- * @param {boolean} immediate - Whether to trigger the function immediately
- * @returns {Function} - The debounced function
+ * Creates a focus trap within a specified element
+ * @param {HTMLElement} element - The element to trap focus within
+ * @returns {Object} - Methods to activate and deactivate the focus trap
  */
-export const debounce = (func, wait = 300, immediate = false) => {
-  let timeout;
+export const createFocusTrap = (element) => {
+  if (!element) return null;
 
-  return function executedFunction(...args) {
-    const context = this;
+  const focusableElements = element.querySelectorAll(
+    'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select'
+  );
 
-    const later = () => {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
 
-    const callNow = immediate && !timeout;
-
-    clearTimeout(timeout);
-
-    timeout = setTimeout(later, wait);
-
-    if (callNow) func.apply(context, args);
+  const handleKeyDown = (event) => {
+    if (event.key === 'Tab') {
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    }
   };
-};
 
-/**
- * Format a number with commas as thousands separators
- *
- * @param {number} num - The number to format
- * @returns {string} - Formatted number string
- */
-export const formatNumber = (num) => {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-};
-
-/**
- * Validate email address format
- *
- * @param {string} email - The email address to validate
- * @returns {boolean} - Whether the email is valid
- */
-export const isValidEmail = (email) => {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
-};
-
-/**
- * Get the current viewport dimensions
- *
- * @returns {Object} - Object containing width and height of viewport
- */
-export const getViewportDimensions = () => {
   return {
-    width: window.innerWidth || document.documentElement.clientWidth,
-    height: window.innerHeight || document.documentElement.clientHeight
+    activate: () => {
+      element.addEventListener('keydown', handleKeyDown);
+      firstElement?.focus();
+    },
+    deactivate: () => {
+      element.removeEventListener('keydown', handleKeyDown);
+    }
   };
 };
 
 /**
- * Generate a unique ID (for keying elements, etc.)
- *
- * @param {string} prefix - Optional prefix for the ID
- * @returns {string} - Unique ID
+ * Detects if device is a mobile device
+ * @returns {boolean} - True if current device is mobile
  */
-export const generateId = (prefix = 'id') => {
-  return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
+export const isMobileDevice = () => {
+  return window.innerWidth < 768;
 };
 
 /**
- * Check if an element is in viewport
- *
- * @param {HTMLElement} element - The DOM element to check
- * @param {number} offset - Optional offset value
- * @returns {boolean} - Whether the element is in viewport
+ * Detects if an element is currently in the viewport
+ * @param {HTMLElement} element - The element to check
+ * @returns {boolean} - True if element is in viewport
  */
-export const isElementInViewport = (element, offset = 0) => {
-  if (!element) return false;
-
+export const isInViewport = (element) => {
   const rect = element.getBoundingClientRect();
-
   return (
-    rect.top >= 0 - offset &&
+    rect.top >= 0 &&
     rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + offset &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 };
 
 /**
- * Smooth scroll to an element
- *
- * @param {string} elementId - ID of the element to scroll to
- * @param {number} offset - Optional offset from the top
+ * Handles Enter and Space keypresses for custom interactive elements
+ * @param {Function} callback - Function to execute when key is pressed
+ * @returns {Function} - Event handler function
  */
-export const scrollToElement = (elementId, offset = 0) => {
-  const element = document.getElementById(elementId);
+export const handleKeyboardActivation = (callback) => {
+  return (event) => {
+    if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+      event.preventDefault();
+      callback(event);
+    }
+  };
+};
 
-  if (element) {
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - offset;
+/**
+ * Sets focus to the first focusable element within a container
+ * @param {HTMLElement} container - Container to search within
+ */
+export const setInitialFocus = (container) => {
+  const focusableElements = container.querySelectorAll(
+    'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex="0"]'
+  );
 
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    });
+  if (focusableElements.length) {
+    focusableElements[0].focus();
   }
+};
+
+/**
+ * Checks if reduced motion is preferred
+ * @returns {boolean} - True if reduced motion is preferred
+ */
+export const prefersReducedMotion = () => {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
+
+/**
+ * Announces a message to screen readers using ARIA live regions
+ * @param {string} message - Message to announce
+ * @param {string} priority - 'polite' or 'assertive'
+ */
+export const announceForScreenReader = (message, priority = 'polite') => {
+  const announcement = document.createElement('div');
+  announcement.setAttribute('aria-live', priority);
+  announcement.setAttribute('aria-atomic', 'true');
+  announcement.classList.add('sr-only');
+  document.body.appendChild(announcement);
+
+  // Use setTimeout to ensure the element is in the DOM before changing its content
+  setTimeout(() => {
+    announcement.textContent = message;
+
+    // Remove after announcement is made
+    setTimeout(() => {
+      document.body.removeChild(announcement);
+    }, 1000);
+  }, 100);
 };

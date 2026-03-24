@@ -1,0 +1,18 @@
+<!-- Add these to the head section -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="stylesheet" href="css/responsive-helpers.css">
+<link rel="stylesheet" href="css/mobile-optimizations.css">
+<script src="js/browser-compatibility.js" defer></script>
+<script src="js/performance-optimizations.js" defer></script>
+<script src="js/security-enhancements.js" defer></script>
+<script src="js/network-resilience.js" defer></script>
+
+<!-- Add this just inside the body tag -->
+<noscript>
+  <div class="noscript-warning">
+    This website works best with JavaScript enabled. Please enable JavaScript for the best experience.
+  </div>
+</noscript>
+
+<!-- Add this near the bottom of the page -->
+<div id="connection-status" class="status-online" aria-live="polite">Online</div>

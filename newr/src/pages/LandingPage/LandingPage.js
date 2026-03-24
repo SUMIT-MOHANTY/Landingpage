@@ -1,40 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import Hero from '../../components/Hero/Hero';
 import Features from '../../components/Features/Features';
 import AIExamples from '../../components/AIExamples/AIExamples';
 import CallToAction from '../../components/CallToAction/CallToAction';
 import Footer from '../../components/Footer/Footer';
-import Container from '../../components/common/Container/Container';
 import './LandingPage.css';
+import { announceForScreenReader } from '../../utils/helpers';
 
 /**
- * LandingPage - Main component for the Generative AI landing page
- * Organizes all section components in the correct order
+ * Main landing page component integrating all sections
+ * @returns {React.ReactElement} - Rendered landing page
  */
 const LandingPage = () => {
+  // Announce page load to screen readers
+  useEffect(() => {
+    announceForScreenReader('Generative AI landing page loaded', 'polite');
+  }, []);
+
   return (
-    <div className="landing-page">
+    <>
       <Header />
-
-      <main>
+      <main id="main-content" className="landing-page">
         <Hero />
-
-        <Container>
-          <Features />
-        </Container>
-
-        <Container className="alternate-bg">
-          <AIExamples />
-        </Container>
-
-        <Container>
-          <CallToAction />
-        </Container>
+        <Features />
+        <AIExamples />
+        <CallToAction />
       </main>
-
       <Footer />
-    </div>
+    </>
   );
 };
 

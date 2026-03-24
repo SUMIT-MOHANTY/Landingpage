@@ -1,70 +1,72 @@
 import React from 'react';
+import Container from '../common/Container/Container';
 import Button from '../common/Button/Button';
 import './Hero.css';
 
 /**
- * Hero - Main hero section of the landing page
- * Features headline, subheadline, CTA buttons and visual element
+ * Hero section component with responsive design and accessibility features
+ * @returns {React.ReactElement} - Rendered hero section
  */
 const Hero = () => {
   return (
-    <section className="hero-section">
-      <div className="hero-container">
-        <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="highlight">Generative AI</span> That Transforms Ideas Into Reality
+    <section className="hero" aria-labelledby="hero-heading">
+      <Container size="wide" className="hero__container">
+        <div className="hero__content">
+          <h1 id="hero-heading" className="hero__title">
+            Transform Your Workflow with Generative AI
           </h1>
-
-          <p className="hero-subtitle">
-            Harness the power of advanced artificial intelligence to create stunning content,
-            generate creative solutions, and streamline your workflow with our intuitive platform.
+          <p className="hero__subtitle">
+            Harness the power of artificial intelligence to streamline your processes,
+            boost creativity, and solve complex problems.
           </p>
-
-          <div className="hero-cta">
-            <Button variant="primary" size="large">
-              Start Creating Free
+          <div className="hero__actions">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => window.location.href = '/demo'}
+              aria-label="Try free demo"
+            >
+              Try Free Demo
             </Button>
-            <Button variant="outline" size="large">
-              View Demo
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={() => window.location.href = '/learn-more'}
+              aria-label="Learn more about our platform"
+            >
+              Learn More
             </Button>
-          </div>
-
-          <div className="hero-stats">
-            <div className="stat-item">
-              <span className="stat-number">10M+</span>
-              <span className="stat-label">Creations Generated</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">50K+</span>
-              <span className="stat-label">Active Users</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">99.9%</span>
-              <span className="stat-label">Uptime</span>
-            </div>
           </div>
         </div>
 
-        <div className="hero-visual">
-          <div className="hero-image-container">
-            <img
-              src="/assets/images/ai-generation-visual.svg"
-              alt="AI Generation Visualization"
-              className="hero-image"
-            />
+        <div className="hero__image" aria-hidden="true">
+          {/* This is a decorative image, so we use aria-hidden */}
+          <img
+            src="/assets/images/hero-image.webp"
+            alt=""
+            loading="eager"
+            width="600"
+            height="400"
+          />
+          <div className="hero__image-overlay"></div>
+        </div>
 
-            <div className="floating-badge top-left">
-              <span className="badge-icon"></span>
-              <span className="badge-text">Smart Analysis</span>
-            </div>
-
-            <div className="floating-badge bottom-right">
-              <span className="badge-icon"></span>
-              <span className="badge-text">Instant Results</span>
-            </div>
+        {/* Stats with proper ARIA roles for screen readers */}
+        <div className="hero__stats" role="region" aria-label="Platform statistics">
+          <div className="hero__stat">
+            <span className="hero__stat-value">10M+</span>
+            <span className="hero__stat-label">Active Users</span>
+          </div>
+          <div className="hero__stat">
+            <span className="hero__stat-value">99.9%</span>
+            <span className="hero__stat-label">Uptime</span>
+          </div>
+          <div className="hero__stat">
+            <span className="hero__stat-value">4.9/5</span>
+            <span className="hero__stat-label">Customer Rating</span>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };
