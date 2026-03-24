@@ -1,0 +1,28 @@
+/* LandingPage.css - Styles for the main landing page */
+
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+.alternate-bg {
+  background-color: var(--background-alt);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .landing-page {
+    /* Mobile specific adjustments */
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .landing-page {
+    /* Tablet specific adjustments */
+  }
+}
