@@ -1,0 +1,21 @@
+{
+  "name": "landing-page-optimization",
+  "version": "1.0.0",
+  "description": "Optimized landing page for quick loading and performance",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -c-1 .",
+    "test:perf": "node tools/performance-test.js http://localhost:8080",
+    "minify:css": "cleancss -o assets/css/styles.min.css assets/css/styles.css",
+    "minify:js": "uglifyjs assets/js/main.js -c -m -o assets/js/main.min.js",
+    "optimize:images": "imagemin assets/images/* --out-dir=assets/images",
+    "build": "npm run minify:css && npm run minify:js && npm run optimize:images"
+  },
+  "devDependencies": {
+    "clean-css-cli": "^5.6.0",
+    "http-server": "^14.1.1",
+    "imagemin-cli": "^7.0.0",
+    "puppeteer": "^19.6.3",
+    "uglify-js": "^3.17.4"
+  }
+}
