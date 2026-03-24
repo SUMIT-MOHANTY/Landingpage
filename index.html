@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optimized Landing Page</title>
+
+  <!-- Preload critical assets -->
+  <link rel="preload" href="dist/main.bundle.js" as="script">
+  <link rel="preload" href="dist/styles.min.css" as="style">
+  <link rel="preload" href="dist/images/hero.jpg" as="image" fetchpriority="high">
+
+  <!-- DNS prefetching for external resources -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://analytics.example.com">
+
+  <!-- Critical CSS inlined -->
+  <style>
+    /* Critical CSS inlined for faster rendering */
+    body, html {margin: 0; padding: 0; font-family: sans-serif;}
+    .hero {height: 100vh; display: flex; align-items: center; justify-content: center;}
+    .hero h1 {font-size: 2.5rem; color: #333;}
+  </style>
+
+  <!-- Non-critical CSS loaded asynchronously -->
+  <link rel="stylesheet" href="dist/styles.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="dist/styles.min.css"></noscript>
+</head>
+<body>
+  <header>
+    <nav>
+      <!-- Navigation content -->
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <!-- Hero image with dimensions to prevent layout shifts -->
+      <img
+        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600'%3E%3C/svg%3E"
+        data-src="dist/images/hero.jpg"
+        class="lazy"
+        alt="Hero image"
+        width="1200"
+        height="600"
+        fetchpriority="high"
+      >
+      <h1>Welcome to Our Optimized Landing Page</h1>
+    </section>
+
+    <section class="features">
+      <div class="feature">
+        <!-- Lazy loaded image -->
+        <img
+          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3C/svg%3E"
+          data-src="dist/images/feature1.jpg"
+          class="lazy"
+          alt="Feature 1"
+          width="400"
+          height="300"
+        >
+        <h2>Feature 1</h2>
+      </div>
+
+      <!-- More features with lazy loaded images -->
+    </section>
+  </main>
+
+  <footer>
+    <!-- Footer content -->
+  </footer>
+
+  <!-- Load JavaScript at the end -->
+  <script src="dist/main.bundle.js" defer></script>
+
+  <!-- Add web vitals monitoring -->
+  <script>
+    // Simple performance metrics reporting
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const perfData = window.performance.timing;
+        const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+        console.log('Page load time:', pageLoadTime);
+
+        // Report to analytics in production
+      }, 0);
+    });
+  </script>
+</body>
+</html>

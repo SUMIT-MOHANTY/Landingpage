@@ -1,0 +1,20 @@
+{
+  "name": "landing-page",
+  "version": "1.0.0",
+  "description": "Landing page with cross-browser testing",
+  "scripts": {
+    "test:browsers": "jest tests/browser-tests",
+    "test:devices": "jest tests/device-tests",
+    "test:a11y": "jest tests/accessibility",
+    "test:performance": "jest tests/performance",
+    "test:all": "jest tests/",
+    "generate:report": "node scripts/generate-test-report.js"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.7.0",
+    "@playwright/test": "^1.32.0",
+    "jest": "^29.5.0",
+    "lighthouse": "^10.0.0",
+    "playwright": "^1.32.0"
+  }
+}

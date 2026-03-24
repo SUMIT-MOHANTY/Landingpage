@@ -1,0 +1,45 @@
+name: Cross-Browser Testing
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run browser tests
+        run: npm run test:browsers
+
+      - name: Run device tests
+        run: npm run test:devices
+
+      - name: Run accessibility tests
+        run: npm run test:a11y
+
+      - name: Run performance tests
+        run: npm run test:performance
+
+      - name: Generate test report
+        run: npm run generate:report
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: docs/testing/test-report-*.md

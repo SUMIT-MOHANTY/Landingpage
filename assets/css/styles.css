@@ -1,0 +1,36 @@
+/* Main stylesheet - to be minified during build */
+
+/* Critical CSS - will be inlined */
+.critical {
+  /* Styles that are needed for above-the-fold content */
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Non-critical CSS - will be loaded asynchronously */
+.non-critical {
+  /* Styles for below-the-fold content */
+  background-color: #f8f8f8;
+  padding: 20px;
+}
+
+/* Use modern CSS features with fallbacks */
+.container {
+  display: flex;
+  display: grid; /* For modern browsers */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Optimize animations for performance */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+  will-change: opacity; /* Hint for browser optimization */
+}
